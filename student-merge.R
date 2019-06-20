@@ -246,3 +246,43 @@ plot2np = plot2n + labs(title = "Portuguese Students", subtitle = "Romances == N
 
 
 
+# 3 - chi of "higher"
+# statistics say that 70% of students wants to go higher
+
+# sample_math -> student_mat
+# sample_por -> student_por
+
+# mat
+# yes - 281, no - 19, all - 300
+
+test3my = length(which(student_mat$higher == "yes"))
+test3mn = length(which(student_mat$higher == "no"))
+
+avg3my = 0.7 * nrow(student_mat)
+avg3mn = 0.3 * nrow(student_mat)
+
+chi3m = (test3my - avg3my)^2 / avg3my + (test3mn - avg3mn)^2 / avg3mn
+chi3m # chi kwadrat ~ 80.02
+
+# por
+# yes - 445, no - 55, all - 500
+
+test3py = length(which(student_por$higher == "yes"))
+test3pn = length(which(student_por$higher == "no"))
+
+avg3py = 0.7 * nrow(student_por)
+avg3pn = 0.3 * nrow(student_por)
+
+chi3p = (test3py - avg3py)^2 / avg3py + (test3pn - avg3pn)^2 / avg3pn
+chi3p # chi kwadrat ~ 85.95
+
+
+df = 1 # 1 stopien swobody
+alfa = 0.05 # poziom istotnosci
+# odczytana wartosc = 3,841
+
+
+# Ponieważ nasza wartość statystyki jest większa od wartości tablicowej, odrzucamy hipotezę zerową. 
+# Istnieją różnicę pomiędzy liczbą osób opłacających a nieopłacających abonament, przy istotności alfa równej 0,05. 
+# Warto jeszcze zauważyć że nasz wynik jest również istotny dla poziomu alfa 0,005. 
+# Im mniejszy poziom istotności założymy, tym mniejsze prawdopodobieństwo popełnienia błędu I rodzaju.

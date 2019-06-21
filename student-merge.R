@@ -17,7 +17,7 @@ student_por = select(d2, -c(colnames(d2)[c(10,20,22,12,9,18,28)]))
 
 
 
-# filtering data
+# filtering data (main reason to disunified results)
 student_mat = union(
     sample_n(student_mat %>% filter(sex == "F"),150),
     sample_n(student_mat %>% filter(sex == "M"),150)
@@ -27,10 +27,6 @@ student_por = union(
     sample_n(student_por %>% filter(sex == "F"),250),
     sample_n(student_por %>% filter(sex == "M"),250)
     )
-
-# to unite data
-student.por <- student_por
-student.mat <- student_mat
 
 # functions
 # fit for x = somedata[1], y = somedata[2]

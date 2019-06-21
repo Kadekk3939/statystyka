@@ -5,14 +5,17 @@ library(ggpubr)
 library(scatterplot3d)
 
 # getdata
-setwd("C:/Users/Kaczor3/Desktop/NIepotrzebne/Studia/Sem4/statystyka")
 d1 <- read.csv("student-mat.csv",sep=",",header=TRUE)
 d2 <- read.csv("student-por.csv",sep=",",header=TRUE)
-d3 <- merge(d1,d2,by=c("school","sex","age","address","famsize","Pstatus","Medu","Fedu","Mjob","Fjob","reason","nursery","internet"))
+# d3 <- merge(d1,d2,by=c("school","sex","age","address","famsize","Pstatus","Medu","Fedu","Mjob","Fjob","reason","nursery","internet"))
+# d3 is not used
+
 
 # removing columns
 student_mat = select(d1, -c(colnames(d1)[c(10,20,22,12,9,18,28)]))
 student_por = select(d2, -c(colnames(d2)[c(10,20,22,12,9,18,28)]))
+
+
 
 # filtering data
 student_mat = union(
@@ -24,6 +27,10 @@ student_por = union(
     sample_n(student_por %>% filter(sex == "F"),250),
     sample_n(student_por %>% filter(sex == "M"),250)
     )
+
+# to unite data
+student.por <- student_por
+student.mat <- student_mat
 
 # functions
 # fit for x = somedata[1], y = somedata[2]
@@ -103,8 +110,6 @@ myImagePlot <- function(x, ...){
     layout(1)
 }
 # ----- END plot function ----- #
-
-
 
 
 
@@ -206,43 +211,6 @@ plot2n = plot2n + geom_errorbar(data = test2n3, aes(absences,G3, ymin = G3 - sd3
 
 plot2nm = plot2n + labs(title = "Math Students", subtitle = "Romances == No", x = "Absences", y = "Average grade points")
 plot2np = plot2n + labs(title = "Portuguese Students", subtitle = "Romances == No", x = "Absences", y = "Average grade points")
-# 3 - 
-
-
-
-# sample_math = student_por
-# d1=sample_math %>% filter(Dalc==1)
-# d2=sample_math %>% filter(Dalc==2)
-# d3=sample_math %>% filter(Dalc==3)
-# d4=sample_math %>% filter(Dalc==4)
-# d5=sample_math %>% filter(Dalc==5)
- 
-# grades <- c()
- 
-# for(i in c(0:20)){
-#   grades <- c(grades,length(data.matrix(d1 %>% filter(G1==i) %>% select(G1)))/length(data.matrix(d1 %>% select(G1))))
-# }
-# for(i in c(0:20)){
-#   grades <- c(grades,length(data.matrix(d2 %>% filter(G1==i) %>% select(G1)))/length(data.matrix(d2 %>% select(G1))))
-# }
-# for(i in c(0:20)){
-#   grades <- c(grades,length(data.matrix(d3 %>% filter(G1==i) %>% select(G1)))/length(data.matrix(d3 %>% select(G1))))
-# }
-# for(i in c(0:20)){
-#   grades <- c(grades,length(data.matrix(d4 %>% filter(G1==i) %>% select(G1)))/length(data.matrix(d4 %>% select(G1))))
-# }
-# for(i in c(0:20)){
-#   grades <- c(grades,length(data.matrix(d5 %>% filter(G1==i) %>% select(G1)))/length(data.matrix(d5 %>% select(G1))))
-# }
- 
-# A=matrix(grades, nrow=5, ncol=21, byrow=TRUE, dimnames=list(c(1:5),c(0:20)))
-# for(row in 1:nrow(A)) {
-#   for(col in 1:ncol(A)) {
-#     A[row, col]<-round(A[row, col], digits=3)
-#   }
-# }
-# A
-# myImagePlot(A)
 
 
 
@@ -276,13 +244,53 @@ avg3pn = 0.3 * nrow(student_por)
 chi3p = (test3py - avg3py)^2 / avg3py + (test3pn - avg3pn)^2 / avg3pn
 chi3p # chi kwadrat ~ 85.95
 
-
-df = 1 # 1 stopien swobody
-alfa = 0.05 # poziom istotnosci
+df = 1 
+alfa = 0.05 
 # odczytana wartosc = 3,841
 
+# 4 - school
+counts <- table(student_mat$school)
+counts2 <- table(student_por$school)
+par(mfrow = c(1,2))
+barplot(counts, main = "School distribution of math students", col = "darkblue")   
+barplot(counts2, main = "and portuguese", col = "red") 
 
-# Ponieważ nasza wartość statystyki jest większa od wartości tablicowej, odrzucamy hipotezę zerową. 
-# Istnieją różnicę pomiędzy liczbą osób opłacających a nieopłacających abonament, przy istotności alfa równej 0,05. 
-# Warto jeszcze zauważyć że nasz wynik jest również istotny dla poziomu alfa 0,005. 
-# Im mniejszy poziom istotności założymy, tym mniejsze prawdopodobieństwo popełnienia błędu I rodzaju.
+# 5 - age
+counts3 <- table(student_mat$age)
+counts4 <- table(student_por$age)
+par(mfrow = c(1,2))
+barplot(counts3, main = "Age distribution of math students", col = "darkblue")   
+barplot(counts4, main = "and portuguese", col = "red") 
+
+# 6 - boxplot
+boxplot(
+    absences~Dalc,
+    data = student_mat, 
+    xlab = "Dalc", 
+    ylab = "Absences"
+    )
+
+
+
+# 7 - last minute trial to grouped-barplot the grades
+
+# counts <- table(student_mat$G1,student_mat$G2,student_mat$G3)
+
+# df = data.frame(G = numeric(60), Points = numeric(60), Count = numeric(60))
+# for (j in 1:3) {
+#     for (i in c(0:20)) {
+#         df$G[20*(j-1)+i] = j 
+#         df$Points[20*(j-1)+i] = i
+#     }
+# }
+
+# ggplot(
+#     counts,
+#     aes(c(0:20), length(which(countsG1 == , fill = )
+#     main = "Grades", 
+#     col = c("green", "red", "darkblue"),
+#     legend = colnames(counts),
+#     beside = TRUE
+#     )   
+
+
